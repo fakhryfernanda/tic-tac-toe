@@ -1,5 +1,6 @@
 const gameBoard = document.querySelector('[data-gameBoard]');
 const tiles = gameBoard.querySelectorAll('[data-tile]');
+const clearButton = document.querySelector('.clear-button');
 
 let count = 0;
 tiles.forEach(tile => {
@@ -16,3 +17,16 @@ tiles.forEach(tile => {
         };
     });
 });
+
+clearButton.addEventListener('click', () => {
+    resetTiles();
+});
+
+// FUNTIONS 
+
+function resetTiles() {
+    tiles.forEach(tile => {
+        tile.innerHTML = '';
+        tile.setAttribute('data-tile', '');
+    })
+};
