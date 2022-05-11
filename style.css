@@ -1,0 +1,25 @@
+.game-board {
+    margin: 0 auto;
+    width: 400px;
+    aspect-ratio: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+}
+
+.tile {
+    aspect-ratio: 1;
+    border: 1px solid black;
+    display: grid;
+    place-items: center;
+}
+
+.fa-xmark {
+    font-size: 7rem;
+    color: red;
+}
+
+.fa-circle {
+    font-size: 5rem;
+    color: green;
+}
