@@ -1,5 +1,9 @@
-.game-board {
+.tic-tac-toe {
     margin: 0 auto;
+    width: fit-content;
+}
+
+.game-board {
     width: 400px;
     aspect-ratio: 1;
     display: grid;
@@ -22,4 +26,16 @@
 .fa-circle {
     font-size: 5rem;
     color: green;
+}
+
+.control {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.clear-button {
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
 }
