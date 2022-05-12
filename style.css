@@ -1,6 +1,7 @@
 .tic-tac-toe {
     margin: 0 auto;
     width: fit-content;
+    position: relative;
 }
 
 .game-board {
@@ -41,7 +42,30 @@
 }
 
 button {
+    width: 150px;
     padding: 10px 20px;
     font-size: 1.5rem;
     cursor: pointer;
+}
+
+.modal {
+    position: absolute;
+    top: 32%;
+    left: 25%;
+    width: 200px;
+    height: 100px;
+    background-color: greenyellow;
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-text {
+    font-size: 2rem;
+    text-align: center;
+}
+
+.hide {
+    display: none;
 }
