@@ -23,13 +23,12 @@ tiles.forEach(tile => {
             // tile hanya dapat diisi jika masih kosong
             if (tile.getAttribute('data-filled') === 'false') {
                 if (count % 2 === 0) {
-                    tile.innerHTML = '<i class="fa-solid fa-xmark">';
+                    human.play(tile);
                 } else {
-                    tile.innerHTML = '<i class="fa-solid fa-circle">';
+                    computer.play(tile);
                 };
                 
                 tile.setAttribute('data-filled', 'true');   // menandai tile sudah diisi  
-                writeAnswer(tile);                          // mencatat jawaban player
                 resultCheck();                              // memeriksa hasil akhir game
             };
         };
@@ -43,8 +42,8 @@ restartButton.addEventListener('click', () => {
 // GAME CONTROL
 
 function gameStart() {
-    human  = new Player('Human');
-    computer = new Player('Computer');
+    human  = new Player('Human', 'x');
+    computer = new Player('Computer', 'o');
     count = 0;
 
     ticTacToe.setAttribute('game-start', 'true');       // start the game
@@ -72,19 +71,18 @@ function resetTiles() {
     });
 };
 
-function Player(name) {
+function Player(name, mark) {
     this.name = name;
     this.answer = [];
-};
 
-function writeAnswer(tile) {
-    if (count % 2 === 0) {
-        human.answer.push(tile.getAttribute('data-tile'));
-    } else {
-        computer.answer.push(tile.getAttribute('data-tile'));
+    if (mark === 'x' || mark === 'X') {this.mark = '<i class="fa-solid fa-xmark">'}
+    else if (mark === 'o' || mark === 'O') {this.mark = '<i class="fa-solid fa-circle">'};
+
+    this.play = function(tile) {
+        this.answer.push(tile.getAttribute('data-tile'));
+        tile.innerHTML = this.mark;
+        count += 1;
     };
-    
-    count += 1;
 };
 
 function resultCheck() {
@@ -121,3 +119,8 @@ function subArrayCheck(arr1, arr2) {
 function modalText(text) {
     modal.firstElementChild.innerText = text;
 }
+
+const papanGame = (() => {
+    const tiles = document.querySelectorAll('.tile');
+    return {tiles};
+})();
