@@ -3,46 +3,74 @@ const gameBoard = ticTacToe.querySelector('[data-game-board]');
 const tiles = ticTacToe.querySelectorAll('[data-tile]');
 const startButton = ticTacToe.querySelector('[data-button="start"]');
 const restartButton = ticTacToe.querySelector('[data-button="restart"]');
+const modal = ticTacToe.querySelector('.modal');
+
+// Human always go first
+let human;
+let computer;
+let count;
 
 // Start the game
 
 startButton.addEventListener('click', () => {
-    gameBoard.style.filter = 'blur(0)';
-    ticTacToe.setAttribute('game-start', 'true');
+    gameStart();
 });
 
-// Human always go first
-let human = new Player('Human');
-let computer = new Player('Computer');
-
-let count = 1;
 tiles.forEach(tile => {
     tile.addEventListener('click', (e) => {
+        // tile hanya dapat diisi ketika game sudah dimulai
         if (ticTacToe.getAttribute('game-start') === 'true') {
+            // tile hanya dapat diisi jika masih kosong
             if (tile.getAttribute('data-filled') === 'false') {
-                if (count % 2 === 1) {
+                if (count % 2 === 0) {
                     tile.innerHTML = '<i class="fa-solid fa-xmark">';
                 } else {
                     tile.innerHTML = '<i class="fa-solid fa-circle">';
                 };
-    
-                tile.setAttribute('data-filled', 'true');
-                writeAnswer(tile);
-                count += 1;
-    
-                winCheck();
+                
+                tile.setAttribute('data-filled', 'true');   // menandai tile sudah diisi  
+                writeAnswer(tile);                          // mencatat jawaban player
+                resultCheck();                              // memeriksa hasil akhir game
             };
         };
     });
 });
 
 restartButton.addEventListener('click', () => {
-    resetTiles();
-    human.answer = [];
-    computer.answer = [];
+    gameStart();
 });
 
+// GAME CONTROL
+
+function gameStart() {
+    human  = new Player('Human');
+    computer = new Player('Computer');
+    count = 0;
+
+    ticTacToe.setAttribute('game-start', 'true');       // start the game
+    gameBoard.style.filter = 'blur(0)';                 // remove blur on game board
+    resetTiles();                                       // reset the tiles
+    modal.classList.add('hide');                        // hide the modal
+    startButton.classList.add('class', 'hide');         // hide start button
+    restartButton.classList.remove('class', 'hide');    // show restart button
+};
+
+function gameStop() {
+    ticTacToe.setAttribute('game-start', 'false');  // stop the game
+    gameBoard.style.filter = 'blur(5px)';           // blur the game board
+    modal.classList.remove('hide');                 // show the modal
+    startButton.classList.remove('class', 'hide');  // show start button
+    restartButton.classList.add('class', 'hide');   // hide restart button
+};
+
 // FUNCTIONS
+
+function resetTiles() {
+    tiles.forEach(tile => {
+        tile.innerHTML = '';
+        tile.setAttribute('data-filled', 'false');
+    });
+};
 
 function Player(name) {
     this.name = name;
@@ -50,38 +78,38 @@ function Player(name) {
 };
 
 function writeAnswer(tile) {
-    if (count % 2 === 1) {
+    if (count % 2 === 0) {
         human.answer.push(tile.getAttribute('data-tile'));
     } else {
         computer.answer.push(tile.getAttribute('data-tile'));
     };
     
+    count += 1;
 };
 
-function resetTiles() {
-    tiles.forEach(tile => {
-        tile.innerHTML = '';
-        tile.setAttribute('data-filled', 'false');
-    })
-};
-
-function winCheck() {
+function resultCheck() {
     const win = ['123', '456', '789', '147', '258', '369', '159', '357'];
+    let winner;
+
     win.some(condition => {
         if (subArrayCheck(human.answer, condition.split(''))) {
-            console.log('Human wins!');
-            ticTacToe.setAttribute('game-start', 'false'); // stop the game
-            gameBoard.style.filter = 'blur(5px)';
-            return true; // stop checking
-        };
-
-        if (subArrayCheck(computer.answer, condition.split(''))) {
-            console.log('Computer wins!');
-            ticTacToe.setAttribute('game-start', 'false'); // stop the game
-            gameBoard.style.filter = 'blur(5px)';
-            return true; // stop checking
+            winner = human;
+            return true;
+        } else if (subArrayCheck(computer.answer, condition.split(''))) {
+            winner = computer;
+            return true;
         };
     });
+
+    if (winner !== undefined) {
+        modalText(`${winner.name} wins!`);
+        gameStop();;
+    };
+    
+    if (winner === undefined && count === 9) {
+        modalText('Draw!')
+        gameStop();
+    }
 };
 
 function subArrayCheck(arr1, arr2) {
@@ -89,3 +117,7 @@ function subArrayCheck(arr1, arr2) {
     // arr1.length >= arr2.length
     return arr2.every(element => arr1.indexOf(element) !== -1);
 };
+
+function modalText(text) {
+    modal.firstElementChild.innerText = text;
+}
