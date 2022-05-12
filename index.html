@@ -10,8 +10,8 @@
     <script src="https://kit.fontawesome.com/e0f8177fe6.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="tic-tac-toe">
-        <div class="game-board" data-gameBoard>
+    <div class="tic-tac-toe" game-start="false">
+        <div class="game-board" data-game-board>
             <div class="tile" data-tile="1" data-filled="false"></div>
             <div class="tile" data-tile="2" data-filled="false"></div>
             <div class="tile" data-tile="3" data-filled="false"></div>
@@ -23,7 +23,8 @@
             <div class="tile" data-tile="9" data-filled="false"></div>
         </div>
         <div class="control">
-            <button type="button" class="restart-button">Restart</button>
+            <button type="button" data-button="start">Play</button>
+            <button type="button" data-button="restart">Restart</button>
         </div>
     </div>
 </body>

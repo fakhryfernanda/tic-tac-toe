@@ -9,6 +9,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 10px;
+    filter: blur(5px);
 }
 
 .tile {
@@ -34,7 +35,12 @@
     justify-content: center;
 }
 
-.restart-button {
+.control {
+    display: flex;
+    gap: 10px;
+}
+
+button {
     padding: 10px 20px;
     font-size: 1.5rem;
     cursor: pointer;
