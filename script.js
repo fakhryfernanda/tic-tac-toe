@@ -1,6 +1,6 @@
 const gameBoard = document.querySelector('[data-gameBoard]');
 const tiles = gameBoard.querySelectorAll('[data-tile]');
-const clearButton = document.querySelector('.clear-button');
+const restartButton = document.querySelector('.restart-button');
 
 // Human always go first
 let human = new Player('Human');
@@ -15,16 +15,20 @@ tiles.forEach(tile => {
             } else {
                 tile.innerHTML = '<i class="fa-solid fa-circle">';
             };
-    
+
             tile.setAttribute('data-filled', 'true');
             writeAnswer(tile);
             count += 1;
+
+            winCheck();
         };
     });
 });
 
-clearButton.addEventListener('click', () => {
+restartButton.addEventListener('click', () => {
     resetTiles();
+    human.answer = [];
+    computer.answer = [];
 });
 
 // FUNCTIONS
@@ -46,6 +50,27 @@ function writeAnswer(tile) {
 function resetTiles() {
     tiles.forEach(tile => {
         tile.innerHTML = '';
-        tile.setAttribute('data-tile', '');
+        tile.setAttribute('data-filled', 'false');
     })
+};
+
+function winCheck() {
+    const win = ['123', '456', '789', '147', '258', '369', '159', '357'];
+    win.some(condition => {
+        if (subArrayCheck(human.answer, condition.split(''))) {
+            console.log('Human wins!');
+            return true; // stop checking
+        };
+
+        if (subArrayCheck(computer.answer, condition.split(''))) {
+            console.log('Computer wins!');
+            return true; // stop checking
+        };
+    });
+};
+
+function subArrayCheck(arr1, arr2) {
+    // check if arr1 contains arr2
+    // arr1.length >= arr2.length
+    return arr2.every(element => arr1.indexOf(element) !== -1);
 };
