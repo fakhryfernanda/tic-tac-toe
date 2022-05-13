@@ -34,10 +34,6 @@
     margin-top: 20px;
     display: flex;
     justify-content: center;
-}
-
-.control {
-    display: flex;
     gap: 10px;
 }
 
@@ -58,6 +54,7 @@ button {
     background-color: greenyellow;
     border: 2px solid black;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -65,11 +62,6 @@ button {
 .info-text {
     font-size: 2rem;
     text-align: center;
-}
-
-.modal.choose-turn {
-    display: flex;
-    flex-direction: column;
 }
 
 .modal.choose-turn > div:first-child {
