@@ -1,75 +1,96 @@
-const ticTacToe = document.querySelector('.tic-tac-toe');
-const gameBoard = ticTacToe.querySelector('[data-game-board]');
-const tiles = ticTacToe.querySelectorAll('[data-tile]');
-const startButton = ticTacToe.querySelector('[data-button="start"]');
-const restartButton = ticTacToe.querySelector('[data-button="restart"]');
-const modal = ticTacToe.querySelector('.modal');
+// GLOBAL VARIABLES
 
-// Human always go first
+const ticTacToe = document.querySelector('.tic-tac-toe');
 let human;
 let computer;
 let count;
 
-// Start the game
+// MODULES AND FACTORIES
 
-startButton.addEventListener('click', () => {
-    gameStart();
-});
+const board = (() => {
+    const self = ticTacToe.querySelector('[data-game-board]');
+    const tiles = ticTacToe.querySelectorAll('[data-tile]');
+    const startButton = ticTacToe.querySelector('[data-button="start"]');
+    const restartButton = ticTacToe.querySelector('[data-button="restart"]');
+    const modal = ticTacToe.querySelector('.modal');
 
-tiles.forEach(tile => {
-    tile.addEventListener('click', (e) => {
-        // tile hanya dapat diisi ketika game sudah dimulai
-        if (ticTacToe.getAttribute('game-start') === 'true') {
-            // tile hanya dapat diisi jika masih kosong
-            if (tile.getAttribute('data-filled') === 'false') {
-                if (count % 2 === 0) {
-                    human.play(tile);
-                } else {
-                    computer.play(tile);
-                };
-                
-                tile.setAttribute('data-filled', 'true');   // menandai tile sudah diisi  
-                resultCheck();                              // memeriksa hasil akhir game
+    const resetTiles = function() {
+        tiles.forEach(tile => {
+            tile.innerHTML = '';
+            tile.setAttribute('data-filled', 'false');
+        });
+    };
+
+    function modalText(text) {
+        board.modal.firstElementChild.innerText = text;
+    }
+
+    const hideElement = function(element) {
+        element.classList.add('hide');
+    };
+
+    const showElement = function(element) {
+        element.classList.remove('hide');
+    };
+
+    return {self, tiles, startButton, restartButton, modal, resetTiles, modalText, hideElement, showElement};
+})();
+
+const game = (() => {
+    const start = function() {
+        human  = new Player('Human', 'x');
+        computer = new Player('Computer', 'o');
+        count = 0;
+    
+        ticTacToe.setAttribute('game-start', 'true');   // start the game
+        board.self.style.filter = 'blur(0)';            // remove blur on game board
+        board.resetTiles();                             // reset the tiles
+        board.hideElement(board.modal);                 // hide the modal
+        board.hideElement(board.startButton);           // hide start button
+        board.showElement(board.restartButton);         // show restart button
+    };
+
+    const stop = function() {
+        ticTacToe.setAttribute('game-start', 'false');  // stop the game
+        board.self.style.filter = 'blur(5px)';          // blur the game board
+        board.showElement(board.modal);                 // show the modal
+        board.showElement(board.startButton);           // show start button
+        board.hideElement(board.restartButton);         // hide restart button
+    };
+
+    function subArrayCheck(arr1, arr2) {
+        // check if arr1 contains arr2
+        // arr1.length >= arr2.length
+        return arr2.every(element => arr1.indexOf(element) !== -1);
+    };
+
+    const resultCheck = function() {
+        let winner;
+        const win = ['123', '456', '789', '147', '258', '369', '159', '357'];
+    
+        win.some(condition => {
+            if (subArrayCheck(human.answer, condition.split(''))) {
+                winner = human;
+                return true;
+            } else if (subArrayCheck(computer.answer, condition.split(''))) {
+                winner = computer;
+                return true;
             };
+        });
+    
+        if (winner !== undefined) {
+            board.modalText(`${winner.name} wins!`);
+            game.stop();;
         };
-    });
-});
+        
+        if (winner === undefined && count === 9) {
+            board.modalText('Draw!')
+            game.stop();
+        }
+    };
 
-restartButton.addEventListener('click', () => {
-    gameStart();
-});
-
-// GAME CONTROL
-
-function gameStart() {
-    human  = new Player('Human', 'x');
-    computer = new Player('Computer', 'o');
-    count = 0;
-
-    ticTacToe.setAttribute('game-start', 'true');       // start the game
-    gameBoard.style.filter = 'blur(0)';                 // remove blur on game board
-    resetTiles();                                       // reset the tiles
-    modal.classList.add('hide');                        // hide the modal
-    startButton.classList.add('class', 'hide');         // hide start button
-    restartButton.classList.remove('class', 'hide');    // show restart button
-};
-
-function gameStop() {
-    ticTacToe.setAttribute('game-start', 'false');  // stop the game
-    gameBoard.style.filter = 'blur(5px)';           // blur the game board
-    modal.classList.remove('hide');                 // show the modal
-    startButton.classList.remove('class', 'hide');  // show start button
-    restartButton.classList.add('class', 'hide');   // hide restart button
-};
-
-// FUNCTIONS
-
-function resetTiles() {
-    tiles.forEach(tile => {
-        tile.innerHTML = '';
-        tile.setAttribute('data-filled', 'false');
-    });
-};
+    return {start, stop, resultCheck};
+})();
 
 function Player(name, mark) {
     this.name = name;
@@ -82,45 +103,34 @@ function Player(name, mark) {
         this.answer.push(tile.getAttribute('data-tile'));
         tile.innerHTML = this.mark;
         count += 1;
+        tile.setAttribute('data-filled', 'true'); // menandai tile sudah diisi
     };
 };
 
-function resultCheck() {
-    const win = ['123', '456', '789', '147', '258', '369', '159', '357'];
-    let winner;
+// Event Listeners
 
-    win.some(condition => {
-        if (subArrayCheck(human.answer, condition.split(''))) {
-            winner = human;
-            return true;
-        } else if (subArrayCheck(computer.answer, condition.split(''))) {
-            winner = computer;
-            return true;
+board.startButton.addEventListener('click', () => {
+    game.start();
+});
+
+board.tiles.forEach(tile => {
+    tile.addEventListener('click', (e) => {
+        // tile hanya dapat diisi ketika game sudah dimulai
+        if (ticTacToe.getAttribute('game-start') === 'true') {
+            // tile hanya dapat diisi jika masih kosong
+            if (tile.getAttribute('data-filled') === 'false') {
+                if (count % 2 === 0) {
+                    human.play(tile);
+                } else {
+                    computer.play(tile);
+                };
+                
+                game.resultCheck();  // memeriksa hasil akhir game
+            };
         };
     });
+});
 
-    if (winner !== undefined) {
-        modalText(`${winner.name} wins!`);
-        gameStop();;
-    };
-    
-    if (winner === undefined && count === 9) {
-        modalText('Draw!')
-        gameStop();
-    }
-};
-
-function subArrayCheck(arr1, arr2) {
-    // check if arr1 contains arr2
-    // arr1.length >= arr2.length
-    return arr2.every(element => arr1.indexOf(element) !== -1);
-};
-
-function modalText(text) {
-    modal.firstElementChild.innerText = text;
-}
-
-const papanGame = (() => {
-    const tiles = document.querySelectorAll('.tile');
-    return {tiles};
-})();
+board.restartButton.addEventListener('click', () => {
+    game.start();
+});
