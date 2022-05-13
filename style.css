@@ -50,10 +50,11 @@ button {
 
 .modal {
     position: absolute;
-    top: 32%;
-    left: 25%;
-    width: 200px;
-    height: 100px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 150px;
     background-color: greenyellow;
     border: 2px solid black;
     display: flex;
@@ -61,9 +62,36 @@ button {
     align-items: center;
 }
 
-.modal-text {
+.info-text {
     font-size: 2rem;
     text-align: center;
+}
+
+.modal.choose-turn {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal.choose-turn > div:first-child {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.prompt > div {
+    padding: 0 10px;
+    border: 1px solid black;
+    border-radius: 20px;
+    text-align: center;
+    background-color: white;
+}
+
+.prompt > div:hover {
+    cursor: pointer;
+    background-color: yellow;
+}
+
+.prompt > :first-child {
+    margin-bottom: 5px;
 }
 
 .hide {

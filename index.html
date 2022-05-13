@@ -27,8 +27,16 @@
             <button type="button" data-button="restart" class="hide">Restart</button>
         </div>
 
-        <div class="modal">
-            <div class="modal-text">Tic Tac Toe</div>
+        <div class="modal game-info hide" data-modal="game-info">
+            <div class="info-text">Tic Tac Toe</div>
+        </div>
+
+        <div class="modal choose-turn" data-modal="choose-turn">
+            <div>Choose</div>
+            <div class="prompt">
+                <div class="choose-turn" first-turn="human">You go first</div>
+                <div class="choose-turn" first-turn="computer">Computer go first</div>
+            </div>
         </div>
     </div>
 </body>
